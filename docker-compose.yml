@@ -7,6 +7,7 @@ networks:
 volumes:
   loki-data:
   grafana-data:
+  prometheus-data:
 
 services:
   loki:
@@ -51,5 +52,29 @@ services:
       - ./provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - loki
+      - prometheus
+    networks:
+      - logging
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on:
+      - pushgateway
+    networks:
+      - logging
+
+  pushgateway:
+    image: prom/pushgateway:v1.8.0
+    container_name: pushgateway
+    restart: unless-stopped
+    ports:
+      - "9091:9091"
     networks:
       - logging
