@@ -32,14 +32,22 @@ rsync -avz --exclude '.git' . user@SERVER_IP:/opt/logging-stack
 ssh user@SERVER_IP
 ```
 
-### 3. Start the stack
+### 3. Create the shared monitoring network
+
+```bash
+docker network create monitoring
+```
+
+This network allows other stacks (e.g. rezultati) to push metrics to Pushgateway.
+
+### 4. Start the stack
 
 ```bash
 cd /opt/logging-stack
 docker compose up -d
 ```
 
-### 4. Verify everything is running
+### 5. Verify everything is running
 
 ```bash
 docker compose ps
